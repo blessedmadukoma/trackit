@@ -20,9 +20,6 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	json.NewDecoder(r.Body).Decode(&user)
 
-	// Validate user input
-	// err := validateNewUserInput(user)
-
 	err := validate.Struct(user)
 	if err != nil {
 		err := models.ErrorResponse{
@@ -52,6 +49,7 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			Message: "Error generating hash for password",
 			Status:  http.StatusBadRequest,
 		}
+
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -75,10 +73,11 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 // SignIn function
 func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
-
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(err)
 	}
 
 	var formatttedBody models.LoginUser
@@ -88,20 +87,42 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
+
 	err = validate.Struct(formatttedBody)
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	email, password := formatttedBody.Email, formatttedBody.Password
 
-	// Validate form input
-	if strings.Trim(email, " ") == "" || strings.Trim(password, " ") == "" {
-		// fmt.Println("Parameter's can't be empty")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(err)
-		return
+	email, password := formatttedBody.Email, formatttedBody.Password
+	emailBlank, passwordBlank := strings.Trim(email, " ") == "", strings.Trim(password, " ") == ""
+	if emailBlank || passwordBlank {
+		if email == "" && password == "" {
+			err := models.ErrorResponse{
+				Message: "Both email and password fields are empty!",
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+			return
+		} else if email == "" {
+			err := models.ErrorResponse{
+				Message: "Email field is empty!",
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+			return
+		} else {
+			err := models.ErrorResponse{
+				Message: "Password field is empty!",
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
 	}
 
 	user := models.User{}
@@ -121,9 +142,10 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	errf := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
 		err := models.ErrorResponse{
-			Message: errf.Error(),
+			Message: "Password does not match!",
 			Status:  http.StatusBadRequest,
 		}
+		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
 	} else {
@@ -156,7 +178,7 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			Expires: expirationTime,
 		})
 
-		http.Redirect(w, r, "/dashboard", http.StatusPermanentRedirect)
+		// http.Redirect(w, r, "/dashboard", http.StatusPermanentRedirect)
 		json.NewEncoder(w).Encode(user)
 	}
 }

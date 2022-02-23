@@ -32,8 +32,9 @@ func GetJWT() []byte {
 func (h handler) checkExistingUser(input *models.User) error {
 	emailResult := h.DB.Where("email=?", input.Email).Find(&input)
 	phoneResult := h.DB.Where("mobile=?", input.Mobile).Find(&input)
-	usernameResult := h.DB.Where("username=?", input.Username).Find(&input)
-	if emailResult.Error != nil || phoneResult.Error != nil || usernameResult.Error != nil {
+	// usernameResult := h.DB.Where("username=?", input.Username).Find(&input)
+	// if emailResult.Error != nil || phoneResult.Error != nil || usernameResult.Error != nil {
+	if emailResult.Error != nil || phoneResult.Error != nil {
 		err := errors.New("user already exists")
 		return err
 	}

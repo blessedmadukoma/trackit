@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	// "github.com/blessedmadukoma/trackit-chima/models"
 	"github.com/joho/godotenv"
 
 	"gorm.io/driver/postgres"
@@ -13,7 +12,7 @@ import (
 )
 
 func Init() *gorm.DB {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading env file:", err)
 	}
@@ -35,7 +34,7 @@ func Init() *gorm.DB {
 	fmt.Println("DB Connected!!")
 
 	// AutoMigrate the User and Organization structs: comment out if done
-	err = db.AutoMigrate(&User{})
+	err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Amount{})
 	if err != nil {
 		log.Fatal("Error migrating db:", err)
 	}
