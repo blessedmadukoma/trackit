@@ -15,7 +15,7 @@ func Handlers() *mux.Router {
 	DB := db.Init()
 	h := controllers.New(DB)
 
-	router.HandleFunc("/", h.Index)
+	router.HandleFunc("/index", h.Index)
 
 	// auth routes
 	authRouter := router.PathPrefix("/auth").Subrouter()
@@ -28,6 +28,7 @@ func Handlers() *mux.Router {
 	userRouter := router.PathPrefix("/user").Subrouter()
 	userRouter.Use(controllers.JwtVerify)
 	// userRouter.HandleFunc("/dashboard", h.Dashboard)
+	userRouter.HandleFunc("/users", h.FetchUsers).Methods("GET")
 	userRouter.HandleFunc("/{id}", h.GetUser).Methods("GET")
 	userRouter.HandleFunc("/{id}", h.UpdateUser).Methods("PUT")
 	userRouter.HandleFunc("/{id}", h.DeleteUser).Methods("DELETE")

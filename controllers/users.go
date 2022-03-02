@@ -14,6 +14,7 @@ var validate = validator.New()
 
 // welcome function
 func (h handler) Index(w http.ResponseWriter, r *http.Request) {
+
 	value := "Index Page"
 	json.NewEncoder(w).Encode(value)
 }

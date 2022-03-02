@@ -4,20 +4,23 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
-	"github.com/gorilla/mux"
+	"github.com/blessedmadukoma/trackit-chima/routes"
+	"github.com/joho/godotenv"
 )
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("index")
-}
-
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/", indexHandler)
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading env file:", err)
+	}
 
-	fmt.Println("Server starting on port 8080!")
-	err := http.ListenAndServe(":8080", router)
+	port := os.Getenv("PORT")
+
+	router := routes.Handlers()
+	fmt.Printf("Server starting on port %s!\n", port)
+	err = http.ListenAndServe(":"+port, router)
 	if err != nil {
 		log.Fatal(err)
 	}
