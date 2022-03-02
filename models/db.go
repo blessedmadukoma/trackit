@@ -5,17 +5,17 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func Init() *gorm.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading env file:", err)
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Fatal("Error loading env file:", err)
+	// }
 
 	// dbESQL := os.Getenv("ELEPHANTSQL_URI")
 	dbUser := os.Getenv("DB_USER")
