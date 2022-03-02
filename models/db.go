@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/joho/godotenv/autoload" // helps to autoload the env
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
