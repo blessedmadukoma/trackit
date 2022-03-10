@@ -16,170 +16,177 @@ import (
 
 //SignUp function -- create a new user
 func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		json.NewEncoder(w).Encode("Signup Screen")
+	} else if r.Method == "POST" {
+		user := &models.User{}
+		json.NewDecoder(r.Body).Decode(&user)
 
-	user := &models.User{}
-	json.NewDecoder(r.Body).Decode(&user)
-
-	err := validate.Struct(user)
-	if err != nil {
-		err := models.ErrorResponse{
-			Message: err.Error(),
-			Status:  http.StatusUnauthorized,
-		}
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	// check if user exists
-	err = h.checkExistingUser(user)
-	if err != nil {
-		err := models.ErrorResponse{
-			Message: err.Error(),
-			Status:  http.StatusBadRequest,
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		err := models.ErrorResponse{
-			Message: "Error generating hash for password",
-			Status:  http.StatusBadRequest,
+		err := validate.Struct(user)
+		if err != nil {
+			err := models.ErrorResponse{
+				Message: err.Error(),
+				Status:  http.StatusUnauthorized,
+			}
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+			return
 		}
 
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	user.Password = string(pass)
-
-	createdUser := h.DB.Create(&user)
-
-	if createdUser.Error != nil {
-		err := models.ErrorResponse{
-			Message: `Error creating user`,
-			Status:  http.StatusBadRequest,
+		// check if user exists
+		err = h.checkExistingUser(user)
+		if err != nil {
+			err := models.ErrorResponse{
+				Message: err.Error(),
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
+
+		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			err := models.ErrorResponse{
+				Message: "Error generating hash for password",
+				Status:  http.StatusBadRequest,
+			}
+
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		user.Password = string(pass)
+
+		createdUser := h.DB.Create(&user)
+
+		if createdUser.Error != nil {
+			err := models.ErrorResponse{
+				Message: `Error creating user`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+		json.NewEncoder(w).Encode(user)
 	}
-	json.NewEncoder(w).Encode(user)
 }
 
 // SignIn function
 func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(err)
-	}
+	if r.Method == "GET" {
+		json.NewEncoder(w).Encode("Login Screen")
+	} else if r.Method == "POST" {
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Fatal(err)
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+		}
 
-	var formatttedBody models.LoginUser
-	err = json.Unmarshal(body, &formatttedBody)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	err = validate.Struct(formatttedBody)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	email, password := formatttedBody.Email, formatttedBody.Password
-	emailBlank, passwordBlank := strings.Trim(email, " ") == "", strings.Trim(password, " ") == ""
-	if emailBlank || passwordBlank {
-		if email == "" && password == "" {
-			err := models.ErrorResponse{
-				Message: "Both email and password fields are empty!",
-				Status:  http.StatusBadRequest,
-			}
+		var formatttedBody models.LoginUser
+		err = json.Unmarshal(body, &formatttedBody)
+		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(err)
 			return
-		} else if email == "" {
+		}
+
+		err = validate.Struct(formatttedBody)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		email, password := formatttedBody.Email, formatttedBody.Password
+		emailBlank, passwordBlank := strings.Trim(email, " ") == "", strings.Trim(password, " ") == ""
+		if emailBlank || passwordBlank {
+			if email == "" && password == "" {
+				err := models.ErrorResponse{
+					Message: "Both email and password fields are empty!",
+					Status:  http.StatusBadRequest,
+				}
+				w.WriteHeader(http.StatusUnauthorized)
+				json.NewEncoder(w).Encode(err)
+				return
+			} else if email == "" {
+				err := models.ErrorResponse{
+					Message: "Email field is empty!",
+					Status:  http.StatusBadRequest,
+				}
+				w.WriteHeader(http.StatusUnauthorized)
+				json.NewEncoder(w).Encode(err)
+				return
+			} else {
+				err := models.ErrorResponse{
+					Message: "Password field is empty!",
+					Status:  http.StatusBadRequest,
+				}
+				w.WriteHeader(http.StatusUnauthorized)
+				json.NewEncoder(w).Encode(err)
+				return
+			}
+		}
+
+		user := models.User{}
+
+		// Check if user exists in the database
+		result := h.DB.Where("email=?", email).Find(&user)
+		if result.Error != nil {
 			err := models.ErrorResponse{
-				Message: "Email field is empty!",
+				Message: "No user exists",
 				Status:  http.StatusBadRequest,
 			}
-			w.WriteHeader(http.StatusUnauthorized)
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		errf := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
+			err := models.ErrorResponse{
+				Message: "Password does not match!",
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(err)
 			return
 		} else {
-			err := models.ErrorResponse{
-				Message: "Password field is empty!",
-				Status:  http.StatusBadRequest,
+			expirationTime := time.Now().Add(5 * time.Minute)
+			// Create the JWT claims, which includes the username and expiry time
+			claims := &models.Claims{
+				User: user,
+				StandardClaims: jwt.StandardClaims{
+					// In JWT, the expiry time is expressed as unix milliseconds
+					ExpiresAt: expirationTime.Unix(),
+				},
 			}
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
-			return
+
+			// Declare the token with the algorithm used for signing, and the claims
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			// Create the JWT string
+			jwtKey := GetJWT()
+			tokenString, err := token.SignedString(jwtKey)
+			if err != nil {
+				log.Println("Error creating JWT return", err)
+				// If there is an error in creating the JWT return an internal server error
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+
+			// set the client cookie for "token" as the JWT generated, set an expiry time same as the token itself
+			http.SetCookie(w, &http.Cookie{
+				Name:    "token",
+				Value:   tokenString,
+				Expires: expirationTime,
+			})
+
+			// http.Redirect(w, r, "/dashboard", http.StatusPermanentRedirect)
+			json.NewEncoder(w).Encode(user)
 		}
-	}
-
-	user := models.User{}
-
-	// Check if user exists in the database
-	result := h.DB.Where("email=?", email).Find(&user)
-	if result.Error != nil {
-		err := models.ErrorResponse{
-			Message: "No user exists",
-			Status:  http.StatusBadRequest,
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
-	}
-
-	errf := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if errf != nil && errf == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
-		err := models.ErrorResponse{
-			Message: "Password does not match!",
-			Status:  http.StatusBadRequest,
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
-		return
-	} else {
-		expirationTime := time.Now().Add(5 * time.Minute)
-		// Create the JWT claims, which includes the username and expiry time
-		claims := &models.Claims{
-			User: user,
-			StandardClaims: jwt.StandardClaims{
-				// In JWT, the expiry time is expressed as unix milliseconds
-				ExpiresAt: expirationTime.Unix(),
-			},
-		}
-
-		// Declare the token with the algorithm used for signing, and the claims
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-		// Create the JWT string
-		jwtKey := GetJWT()
-		tokenString, err := token.SignedString(jwtKey)
-		if err != nil {
-			log.Println("Error creating JWT return", err)
-			// If there is an error in creating the JWT return an internal server error
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		// set the client cookie for "token" as the JWT generated, set an expiry time same as the token itself
-		http.SetCookie(w, &http.Cookie{
-			Name:    "token",
-			Value:   tokenString,
-			Expires: expirationTime,
-		})
-
-		// http.Redirect(w, r, "/dashboard", http.StatusPermanentRedirect)
-		json.NewEncoder(w).Encode(user)
 	}
 }
 
