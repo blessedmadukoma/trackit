@@ -14,11 +14,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type result struct {
-	user    models.User
-	account models.Account
-}
-
 var user = &models.User{}
 
 //SignUp function -- create a new user
@@ -26,7 +21,6 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Signup Screen")
 	} else if r.Method == "POST" {
-		
 		json.NewDecoder(r.Body).Decode(&user)
 
 		err := validate.Struct(user)
