@@ -14,12 +14,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type result struct {
+	user    models.User
+	account models.Account
+}
+
+var user = &models.User{}
+
 //SignUp function -- create a new user
 func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Signup Screen")
 	} else if r.Method == "POST" {
-		user := &models.User{}
+		
 		json.NewDecoder(r.Body).Decode(&user)
 
 		err := validate.Struct(user)
@@ -70,6 +77,54 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 			return
 		}
+
+		// Create an empty account
+		account := &models.Account{}
+		account.Amount = 0
+		account.User = *user
+		account.UserID = user.ID
+		accountCreated := h.DB.Create(&account)
+		if accountCreated.Error != nil {
+			err := models.ErrorResponse{
+				Message: `Error creating empty account`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		// create empty income
+		income := &models.Income{}
+		income.Amount = 0
+		income.User = *user
+		income.UserID = user.ID
+		incomeCreated := h.DB.Create(&account)
+		if incomeCreated.Error != nil {
+			err := models.ErrorResponse{
+				Message: `Error creating empty income`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+		// create empty expense
+		expense := &models.Expense{}
+		expense.Amount = 0
+		expense.User = *user
+		expense.UserID = user.ID
+		expenseCreated := h.DB.Create(&expense)
+		if expenseCreated.Error != nil {
+			err := models.ErrorResponse{
+				Message: `Error creating empty expense`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
 		json.NewEncoder(w).Encode(user)
 	}
 }
@@ -131,7 +186,7 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		user := models.User{}
+		// user := models.User{}
 
 		// Check if user exists in the database
 		result := h.DB.Where("email=?", email).Find(&user)
@@ -158,7 +213,7 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			expirationTime := time.Now().Add(5 * time.Minute)
 			// Create the JWT claims, which includes the username and expiry time
 			claims := &models.Claims{
-				User: user,
+				User: *user,
 				StandardClaims: jwt.StandardClaims{
 					// In JWT, the expiry time is expressed as unix milliseconds
 					ExpiresAt: expirationTime.Unix(),

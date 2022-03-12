@@ -24,6 +24,15 @@ func Handlers() *mux.Router {
 	authRouter.HandleFunc("/logout", h.LogOut).Methods("POST")
 	authRouter.HandleFunc("/reset-password", h.ResetPassword).Methods("PUT")
 
+// dashboard routes
+	authRouter.HandleFunc("/balance", h.GetBalance).Methods("GET")
+	authRouter.HandleFunc("/income", h.GetIncome).Methods("GET")
+	authRouter.HandleFunc("/income", h.AddIncome).Methods("POST")
+	authRouter.HandleFunc("/expense", h.GetExpense).Methods("GET")
+	authRouter.HandleFunc("/expense", h.AddExpense).Methods("POST")
+	authRouter.HandleFunc("/budget", h.GetBudget).Methods("GET")
+	authRouter.HandleFunc("/budget", h.CreateBudget).Methods("POST")
+
 	// user routes
 	userRouter := router.PathPrefix("/user").Subrouter()
 	userRouter.Use(controllers.JwtVerify)

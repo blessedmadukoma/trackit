@@ -58,7 +58,7 @@ type Income struct {
 	User   User
 }
 
-type Amount struct {
+type Account struct {
 	gorm.Model
 	Amount float64 `json:"amount"`
 	UserID uint
