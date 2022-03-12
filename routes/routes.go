@@ -19,8 +19,8 @@ func Handlers() *mux.Router {
 
 	// auth routes
 	authRouter := router.PathPrefix("/auth").Subrouter()
-	authRouter.HandleFunc("/signup", h.SignUp).Methods("POST")
-	authRouter.HandleFunc("/signin", h.SignIn).Methods("POST")
+	authRouter.HandleFunc("/signup", h.SignUp).Methods("POST", "GET")
+	authRouter.HandleFunc("/signin", h.SignIn).Methods("POST", "GET")
 	authRouter.HandleFunc("/logout", h.LogOut).Methods("POST")
 	authRouter.HandleFunc("/reset-password", h.ResetPassword).Methods("PUT")
 
