@@ -88,12 +88,19 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// account.User.Firstname = user.Firstname
+		// account.User.Lastname = user.Lastname
+		// account.User.Email = user.Email
+		// account.User.Mobile = user.Mobile
+		// account.User.Password = user.Password
+		// h.DB.Save(&account)
+
 		// create empty income
 		income := &models.Income{}
 		income.Amount = 0
 		income.User = *user
 		income.UserID = user.ID
-		incomeCreated := h.DB.Create(&account)
+		incomeCreated := h.DB.Create(&income)
 		if incomeCreated.Error != nil {
 			err := models.ErrorResponse{
 				Message: `Error creating empty income`,
@@ -103,6 +110,14 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 			return
 		}
+
+		// income.User.Firstname = user.Firstname
+		// income.User.Lastname = user.Lastname
+		// income.User.Email = user.Email
+		// income.User.Mobile = user.Mobile
+		// income.User.Password = user.Password
+		// h.DB.Save(&income)
+
 		// create empty expense
 		expense := &models.Expense{}
 		expense.Amount = 0
@@ -119,11 +134,41 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// expense.User.Firstname = user.Firstname
+		// expense.User.Lastname = user.Lastname
+		// expense.User.Email = user.Email
+		// expense.User.Mobile = user.Mobile
+		// expense.User.Password = user.Password
+		// h.DB.Save(&expense)
+
+		// create empty budget
+		budget := &models.Budget{}
+		budget.Amount = 0
+		budget.User = *user
+		budget.UserID = user.ID
+		budgetCreated := h.DB.Create(&budget)
+		if budgetCreated.Error != nil {
+			err := models.ErrorResponse{
+				Message: `Error creating empty budget`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		// budget.User.Firstname = user.Firstname
+		// budget.User.Lastname = user.Lastname
+		// budget.User.Email = user.Email
+		// budget.User.Mobile = user.Mobile
+		// budget.User.Password = user.Password
+		// h.DB.Save(&budget)
+
 		json.NewEncoder(w).Encode(user)
 	}
 }
 
-// SignIn function
+// ----- SignIn function
 func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Login Screen")
@@ -227,13 +272,23 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// set the client cookie for "token" as the JWT generated, set an expiry time same as the token itself
-			http.SetCookie(w, &http.Cookie{
+			cookie := &http.Cookie{
 				Name:    "token",
+				Path:    "/",
 				Value:   tokenString,
 				Expires: expirationTime,
-			})
+			}
 
-			// http.Redirect(w, r, "/dashboard", http.StatusPermanentRedirect)
+			// cookie.Value = tokenString
+			http.SetCookie(w, cookie)
+			// http.SetCookie(w, &http.Cookie{
+			// 	Name:    "token",
+			// 	Value:   tokenString,
+			// 	Expires: expirationTime,
+			// })
+
+			// fmt.Println(cookie.Value)
+
 			json.NewEncoder(w).Encode(user)
 		}
 	}

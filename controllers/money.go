@@ -12,7 +12,7 @@ import (
 // var jwtKey = []byte("my_secret_key")
 
 // Dashboard
-func Dashboard(r *http.Request) (models.User, models.ErrorResponse) {
+func Dashboard(w http.ResponseWriter, r *http.Request) (models.User, models.ErrorResponse) {
 	c, err := r.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -86,7 +86,7 @@ func Dashboard(r *http.Request) (models.User, models.ErrorResponse) {
 // Get Income
 func (h Handler) GetIncome(w http.ResponseWriter, r *http.Request) {
 
-	claimedUser, err := Dashboard(r)
+	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
 		json.NewEncoder(w).Encode(err)
@@ -125,9 +125,8 @@ func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 // Get Budget
 func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 	// get budget
-	// if what is being returned is empty, i.e. result.BudgetName == "" && result.amount== "" && result.Description == "", return to the frontend: 0
 
-	claimedUser, err := Dashboard(r)
+	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
 		json.NewEncoder(w).Encode(err)
@@ -135,7 +134,7 @@ func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 	}
 
 	budget := &models.Budget{}
-	result := h.DB.Table("bugdets").First(&budget).Where("UserID", claimedUser.ID)
+	result := h.DB.Table("budgets").First(&budget).Where("user_id", claimedUser.ID)
 	if result.Error != nil {
 		err := models.ErrorResponse{
 			Message: `error getting a record`,
@@ -149,9 +148,48 @@ func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(budget)
 }
 
-// Create Budget
-func (h Handler) CreateBudget(w http.ResponseWriter, r *http.Request) {
-	// create budget
+// Update Budget - this is the only function working: since they have only one budget
+func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
+
+	claimedUser, err := Dashboard(w, r)
+	if err.Message != "" {
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	budgetInput := &models.Budget{}
+	json.NewDecoder(r.Body).Decode(&budgetInput)
+
+	budget := &models.Budget{}
+	result := h.DB.Table("budgets").First(&budget).Where("uder_id", claimedUser.ID)
+	if result.Error != nil {
+		err := models.ErrorResponse{
+			Message: `error getting budget`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	budget.Budget_name = budgetInput.Budget_name
+	budget.Amount = budgetInput.Amount
+	budget.Description = budgetInput.Budget_name
+	budget.StartDate = budgetInput.StartDate
+	budget.EndDate = budgetInput.EndDate
+
+	result = h.DB.Save(&budget)
+	if result.Error != nil {
+		err := models.ErrorResponse{
+			Message: `error updating budget`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	json.NewEncoder(w).Encode(budget)
 }
 
 // Expense Screen
@@ -160,7 +198,7 @@ func (h Handler) CreateBudget(w http.ResponseWriter, r *http.Request) {
 func (h Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	// get expense from Expense table
 
-	claimedUser, err := Dashboard(r)
+	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
 		json.NewEncoder(w).Encode(err)
@@ -193,7 +231,7 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	// get balance from account table
 
-	claimedUser, err := Dashboard(r)
+	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
 		json.NewEncoder(w).Encode(err)
