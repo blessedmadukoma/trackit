@@ -121,15 +121,62 @@ func (h Handler) GetIncome(w http.ResponseWriter, r *http.Request) {
 // Add income screen
 func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 	// add amount, date gotten from json
+	var Validator = validator.New()
 
-	// initiailly set to Zero - remove when you have connected to database
-	value := 0
-	json.NewEncoder(w).Encode(value)
+	income := &models.Income{}
+	json.NewDecoder(r.Body).Decode(&income)
+
+	validationError := Validator.Struct(income)
+	if validationError != nil {
+		err := models.ErrorResponse{
+			Message: `Values could not be validated`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	claimedUser, err := Dashboard(w, r)
+	if err.Message != "" {
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if income.Amount < 1 {
+		err := models.ErrorResponse{
+			Message: `Income cannot be that low!`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	// assign some values
+	income.UserID = claimedUser.ID
+	income.User.Firstname = claimedUser.Firstname
+	income.User.Lastname = claimedUser.Lastname
+	income.User.Email = claimedUser.Email
+	income.User.Mobile = claimedUser.Mobile
+
+	result := h.DB.Create(&income).Where("user_id", claimedUser.ID)
+	if result.Error != nil {
+		// fmt.Println("result error:", result.Error)
+		err := models.ErrorResponse{
+			Message: `error creating income`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(income)
 }
 
-// func getIncome(id string) {
-// 	h.DB.First(id)
-// }
+func GetAllIncome(w http.ResponseWriter, r *http.Request) {
+	// 
+}
 
 // Budget Screen
 // Get Budget
@@ -216,6 +263,11 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 
 // Expense Screen
 
+// Get all expenses
+func GetAllExpenses(w http.ResponseWriter, r *http.Request) {
+	// 
+}
+
 // Get Expense
 func (h Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	// get expense from Expense table
@@ -301,7 +353,7 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 }
 
 // Balance
-// Get Balance for Dashboard --
+// Get Balance for Dashboard -- should be get all your balance -> you should have only one
 func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	// get balance from account table
 
