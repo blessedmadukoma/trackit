@@ -6,24 +6,26 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	_ "github.com/lib/pq"
 	"gorm.io/gorm"
+
+	_ "github.com/go-playground/validator/v10"
 )
 
 type User struct {
 	gorm.Model
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Email     string `gorm:"unique" json:"email"`
+	Firstname string `json:"firstname" gorm:"not null"`
+	Lastname  string `json:"lastname" gorm:"not null"`
+	Email     string `gorm:"unique;not null" json:"email"`
 	// Username  string `gorm:"unique" json:"username"`
-	Mobile   string `gorm:"unique" json:"mobile"`
-	Password string `json:"password"`
+	Mobile   string `gorm:"unique;not null" json:"mobile"`
+	Password string `json:"password" gorm:"not null"`
 }
 
 type Expense struct {
 	gorm.Model
-	Amount         float64   `json:"amount"`
-	Description    string    `json:"description"`
+	Amount         float64   `gorm:"not null" json:"amount"`
+	Description    string    `gorm:"not null" json:"description"`
 	Date_purchased time.Time `json:"date_purchased"`
-	Category       string    `json:"category"`
+	Category       string    `gorm:"not null" json:"category"`
 	UserID         uint
 	User           User
 	// User        User  `gorm:"foreignkey:UserID;association_foreignkey:ID" json:"UserID"`
@@ -31,11 +33,11 @@ type Expense struct {
 
 type Budget struct {
 	gorm.Model
-	Budget_name string    `json:"budget_name"`
-	Amount      float64   `json:"amount"`
-	Description string    `json:"description"`
-	StartDate   time.Time `json:"startDate"`
-	EndDate     string    `json:"endDate"`
+	Budget_name string    `json:"budget_name" gorm:"not null"`
+	Amount      float64   `json:"amount" gorm:"not null"`
+	Description string    `json:"description" gorm:"not null"`
+	StartDate   time.Time `json:"startDate" gorm:"not null"`
+	EndDate     string    `json:"endDate" gorm:"not null"`
 	UserID      uint
 	User        User
 	// User        User  `gorm:"foreignkey:UserID;association_foreignkey:ID" json:"UserID"`
@@ -43,8 +45,8 @@ type Budget struct {
 
 type Transactions struct {
 	gorm.Model
-	Category string  `json:"category"`
-	Amount   float64 `json:"amount"`
+	Category string  `json:"category" gorm:"not null"`
+	Amount   float64 `json:"amount" gorm:"not null"`
 	UserID   uint
 	User     User
 	// User        User  `gorm:"foreignkey:UserID;association_foreignkey:ID" json:"UserID"`
@@ -52,15 +54,15 @@ type Transactions struct {
 
 type Income struct {
 	gorm.Model
-	Amount float64   `json:"amount"`
-	Date   time.Time `json:"date"`
+	Amount float64   `json:"amount" gorm:"not null"`
+	Date   time.Time `json:"date" gorm:"not null"`
 	UserID uint
 	User   User
 }
 
 type Account struct {
 	gorm.Model
-	Amount float64 `json:"amount"`
+	Amount float64 `json:"amount" gorm:"not null"`
 	UserID uint
 	User   User
 }

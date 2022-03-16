@@ -3,10 +3,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/blessedmadukoma/trackit-chima/models"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/go-playground/validator/v10"
+	// "gopkg.in/dealancer/validate.v2"
 )
 
 // var jwtKey = []byte("my_secret_key")
@@ -105,6 +109,12 @@ func (h Handler) GetIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	income.UserID = claimedUser.ID
+	income.User.Firstname = claimedUser.Firstname
+	income.User.Lastname = claimedUser.Lastname
+	income.User.Email = claimedUser.Email
+	income.User.Mobile = claimedUser.Mobile
+
 	json.NewEncoder(w).Encode(income)
 }
 
@@ -145,6 +155,12 @@ func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	budget.UserID = claimedUser.ID
+	budget.User.Firstname = claimedUser.Firstname
+	budget.User.Lastname = claimedUser.Lastname
+	budget.User.Email = claimedUser.Email
+	budget.User.Mobile = claimedUser.Mobile
+
 	json.NewEncoder(w).Encode(budget)
 }
 
@@ -161,7 +177,7 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&budgetInput)
 
 	budget := &models.Budget{}
-	result := h.DB.Table("budgets").First(&budget).Where("uder_id", claimedUser.ID)
+	result := h.DB.Table("budgets").First(&budget).Where("user_id", claimedUser.ID)
 	if result.Error != nil {
 		err := models.ErrorResponse{
 			Message: `error getting budget`,
@@ -178,9 +194,15 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 	budget.StartDate = budgetInput.StartDate
 	budget.EndDate = budgetInput.EndDate
 
+	budget.UserID = claimedUser.ID
+	budget.User.Firstname = claimedUser.Firstname
+	budget.User.Lastname = claimedUser.Lastname
+	budget.User.Email = claimedUser.Email
+	budget.User.Mobile = claimedUser.Mobile
+
 	result = h.DB.Save(&budget)
 	if result.Error != nil {
-		err := models.ErrorResponse{
+		err := &models.ErrorResponse{
 			Message: `error updating budget`,
 			Status:  http.StatusBadRequest,
 		}
@@ -218,12 +240,64 @@ func (h Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
+	expense.UserID = claimedUser.ID
+	expense.User.Firstname = claimedUser.Firstname
+	expense.User.Lastname = claimedUser.Lastname
+	expense.User.Email = claimedUser.Email
+	expense.User.Mobile = claimedUser.Mobile
+
 	json.NewEncoder(w).Encode(expense)
 }
 
 // Add expense
 func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 	// Enter amount, description, select date (purchased), and category gotten from JSON
+
+	var Validator = validator.New()
+
+	expense := &models.Expense{}
+	json.NewDecoder(r.Body).Decode(&expense)
+
+	validationError := Validator.Struct(expense)
+	if validationError != nil {
+		log.Fatal("Error validating struct:", validationError)
+	}
+	claimedUser, err := Dashboard(w, r)
+	if err.Message != "" {
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	if expense.Amount < 1 || expense.Description == "" {
+		err := models.ErrorResponse{
+			Message: `Invalid values`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	// assign some values
+	expense.UserID = claimedUser.ID
+	expense.User.Firstname = claimedUser.Firstname
+	expense.User.Lastname = claimedUser.Lastname
+	expense.User.Email = claimedUser.Email
+	expense.User.Mobile = claimedUser.Mobile
+
+	result := h.DB.Create(&expense).Where("user_id", claimedUser.ID)
+	if result.Error != nil {
+		fmt.Println("result error:", result.Error)
+		err := models.ErrorResponse{
+			Message: `error creating expense`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+	json.NewEncoder(w).Encode(expense)
 }
 
 // Balance
@@ -249,6 +323,12 @@ func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
+
+	account.UserID = claimedUser.ID
+	account.User.Firstname = claimedUser.Firstname
+	account.User.Lastname = claimedUser.Lastname
+	account.User.Email = claimedUser.Email
+	account.User.Mobile = claimedUser.Mobile
 
 	json.NewEncoder(w).Encode(account)
 }

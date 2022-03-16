@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -249,7 +250,9 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(err)
 			return
 		} else {
-			expirationTime := time.Now().Add(5 * time.Minute)
+
+			// expiration time = 20 minutes
+			expirationTime := time.Now().Add(20 * time.Minute)
 			// Create the JWT claims, which includes the username and expiry time
 			claims := &models.Claims{
 				User: *user,
@@ -287,7 +290,7 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			// 	Expires: expirationTime,
 			// })
 
-			// fmt.Println(cookie.Value)
+			fmt.Println(cookie.Value)
 
 			json.NewEncoder(w).Encode(user)
 		}
