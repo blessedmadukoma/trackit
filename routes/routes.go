@@ -27,8 +27,10 @@ func Handlers() *mux.Router {
 // dashboard routes
 	router.HandleFunc("/balance", h.GetBalance).Methods("GET")
 	router.HandleFunc("/income", h.GetIncome).Methods("GET")
+	router.HandleFunc("/incomes", h.GetAllIncome).Methods("GET")
 	router.HandleFunc("/income", h.AddIncome).Methods("POST")
 	router.HandleFunc("/expense", h.GetExpense).Methods("GET")
+	router.HandleFunc("/expenses", h.GetAllExpenses).Methods("GET")
 	router.HandleFunc("/expense", h.AddExpense).Methods("POST")
 	router.HandleFunc("/budget", h.GetBudget).Methods("GET")
 	router.HandleFunc("/budget", h.UpdateBudget).Methods("PUT")
