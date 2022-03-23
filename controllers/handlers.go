@@ -24,11 +24,6 @@ func New(db *gorm.DB) handler {
 	return handler{db}
 }
 
-func GetJWT() []byte {
-	jwtKey := []byte("qwerewndeinn3#456%$%^Y4&")
-	return jwtKey
-}
-
 func (h handler) checkExistingUser(input *models.User) error {
 	emailResult := h.DB.Where("email=?", input.Email).Find(&input)
 	phoneResult := h.DB.Where("mobile=?", input.Mobile).Find(&input)
