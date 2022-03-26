@@ -59,6 +59,15 @@ func (h Handler) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errResponse)
 			return
 		}
+		if expense.Category == "" && expense.Date_purchased == ""{
+			errResponse := &models.ErrorResponse{
+				Status:  http.StatusNotFound,
+				Message: "No expense record!",
+			}
+			w.WriteHeader(errResponse.Status)
+			json.NewEncoder(w).Encode(errResponse)
+			return
+		}
 		expense.User.ID = claimedUser.ID
 		expense.User.Firstname = claimedUser.Firstname
 		expense.User.Lastname = claimedUser.Lastname
@@ -123,9 +132,18 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if expense.Amount < 1 || expense.Description == "" {
+	if expense.Amount < 1 {
 		errorResponse := models.ErrorResponse{
-			Message: `Invalid values`,
+			Message: `Amount cannot be less than 1`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(errorResponse.Status)
+		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+	if expense.Description == "" {
+		errorResponse := models.ErrorResponse{
+			Message: `Description cannot be empty`,
 			Status:  http.StatusBadRequest,
 		}
 		w.WriteHeader(errorResponse.Status)

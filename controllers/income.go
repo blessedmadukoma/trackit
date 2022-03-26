@@ -57,6 +57,15 @@ func (h Handler) GetAllIncome(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(errResponse)
 			return
 		}
+		if income.Amount == 0 {
+			errResponse := &models.ErrorResponse{
+				Status:  http.StatusNotFound,
+				Message: "No income record!",
+			}
+			w.WriteHeader(errResponse.Status)
+			json.NewEncoder(w).Encode(errResponse)
+			return
+		}
 		income.User.ID = claimedUser.ID
 		income.User.Firstname = claimedUser.Firstname
 		income.User.Lastname = claimedUser.Lastname
