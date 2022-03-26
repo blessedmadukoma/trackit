@@ -22,7 +22,7 @@ func (h Handler) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, errur := h.DB.Raw(`SELECT * FROM expenses WHERE user_id=$1`, claimedUser.ID).Rows()
+	result, errur := h.DB.Raw(`SELECT * FROM expenses WHERE user_id=?`, claimedUser.ID).Rows()
 
 	if errur != nil {
 		err := models.ErrorResponse{

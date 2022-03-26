@@ -63,8 +63,9 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		createdUser := h.DB.Create(&user)
 
 		if createdUser.Error != nil {
+			fmt.Println(createdUser.Error)
 			err := models.ErrorResponse{
-				Message: `Error creating user`,
+				Message: `User already exists`,
 				Status:  http.StatusBadRequest,
 			}
 			w.WriteHeader(http.StatusBadRequest)
@@ -215,7 +216,7 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 		// user := models.User{}
 
 		// Check if user exists in the database
-		result := h.DB.Raw("SELECT * FROM users where email = $1", user.Email).Find(&user)
+		result := h.DB.Raw("SELECT * FROM users where email = ?", user.Email).Find(&user)
 
 		if result.Error != nil {
 			err := models.ErrorResponse{
@@ -227,12 +228,12 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		if user.Firstname == "" && user.Lastname == ""{
+		if user.Firstname == "" && user.Lastname == "" {
 			errorResponse := models.ErrorResponse{
-						Message: "No user exists",
-						Status:  http.StatusBadRequest,
-					}
-					w.WriteHeader(http.StatusBadRequest)
+				Message: "No user exists",
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(errorResponse)
 			return
 		}
@@ -330,7 +331,7 @@ func (h handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Check if user exists in the database
-	result := h.DB.Table("users").Where("email=$1", newResetUser.Email).Find(&newResetUser)
+	result := h.DB.Table("users").Where("email=?", newResetUser.Email).Find(&newResetUser)
 	if result.Error != nil {
 		err := HandleError(result.Error)
 		w.WriteHeader(http.StatusUnauthorized)
@@ -345,7 +346,7 @@ func (h handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newResetUser.New_password = string(new_password)
-	updatedUser := h.DB.Table("users").Where("email=$1", newResetUser.Email).Update("password", newResetUser.New_password)
+	updatedUser := h.DB.Table("users").Where("email=?", newResetUser.Email).Update("password", newResetUser.New_password)
 
 	if updatedUser.Error != nil {
 		err := HandleError(updatedUser.Error)
