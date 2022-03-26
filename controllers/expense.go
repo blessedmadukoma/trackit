@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/blessedmadukoma/trackit-chima/models"
 	"github.com/go-playground/validator/v10"
@@ -139,6 +140,21 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 	expense.User.Email = claimedUser.Email
 	expense.User.Mobile = claimedUser.Mobile
 
+	date := time.Now().UTC()
+	time := fmt.Sprint(date.Hour()+1) + ":" + fmt.Sprint(date.Minute())
+
+	transaction := &models.Transactions{}
+	transaction.Amount = expense.Amount
+	transaction.Category = expense.Category
+	transaction.Date = expense.Date_purchased
+	transaction.Time = time
+	transaction.UserID = claimedUser.ID
+	transaction.User.ID = claimedUser.ID
+	transaction.User.Firstname = claimedUser.Firstname
+	transaction.User.Lastname = claimedUser.Lastname
+	transaction.User.Email = claimedUser.Email
+	transaction.User.Mobile = claimedUser.Mobile
+
 	result := h.DB.Create(&expense).Where("user_id", claimedUser.ID)
 	if result.Error != nil {
 		fmt.Println("result error:", result.Error)
@@ -148,6 +164,17 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 		}
 		w.WriteHeader(errorResponse.Status)
 		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	errorr := h.DB.Create(&transaction).Where("user_id", claimedUser.ID)
+	if errorr.Error != nil {
+		err := models.ErrorResponse{
+			Message: `error saving to transactions`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 	json.NewEncoder(w).Encode(expense)

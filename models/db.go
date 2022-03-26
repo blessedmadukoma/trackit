@@ -33,7 +33,6 @@ func Init() *gorm.DB {
 
 	fmt.Println("DB Connected!!")
 
-	// AutoMigrate the User and Organization structs: comment out if done
 	err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Account{})
 	if err != nil {
 		log.Fatal("Error migrating db:", err)

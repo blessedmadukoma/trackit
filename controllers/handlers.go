@@ -13,6 +13,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Date Formatting
+const (
+	DDMMYYYYhhmmss = "01/02/2006 15:04:05"
+	DDMMYYYY = "01/02/2006"
+	hhmm = "15:04"
+)
+
 // Dependency injection
 type handler struct {
 	DB *gorm.DB
