@@ -37,24 +37,24 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		// check if user exists
 		err = h.checkExistingUser(user)
 		if err != nil {
-			err := models.ErrorResponse{
+			errResponse := models.ErrorResponse{
 				Message: err.Error(),
 				Status:  http.StatusBadRequest,
 			}
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(errResponse)
 			return
 		}
 
 		pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		if err != nil {
-			err := models.ErrorResponse{
+			errResponse := models.ErrorResponse{
 				Message: "Error generating hash for password",
 				Status:  http.StatusBadRequest,
 			}
 
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(errResponse)
 			return
 		}
 
