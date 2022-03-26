@@ -89,81 +89,53 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// account.User.Firstname = user.Firstname
-		// account.User.Lastname = user.Lastname
-		// account.User.Email = user.Email
-		// account.User.Mobile = user.Mobile
-		// account.User.Password = user.Password
-		// h.DB.Save(&account)
-
 		// create empty income
-		income := &models.Income{}
-		income.Amount = 0
-		income.User = *user
-		income.UserID = user.ID
-		incomeCreated := h.DB.Create(&income)
-		if incomeCreated.Error != nil {
-			err := models.ErrorResponse{
-				Message: `Error creating empty income`,
-				Status:  http.StatusBadRequest,
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(err)
-			return
-		}
-
-		// income.User.Firstname = user.Firstname
-		// income.User.Lastname = user.Lastname
-		// income.User.Email = user.Email
-		// income.User.Mobile = user.Mobile
-		// income.User.Password = user.Password
-		// h.DB.Save(&income)
+		// income := &models.Income{}
+		// income.Amount = 0
+		// income.User = *user
+		// income.UserID = user.ID
+		// incomeCreated := h.DB.Create(&income)
+		// if incomeCreated.Error != nil {
+		// 	err := models.ErrorResponse{
+		// 		Message: `Error creating empty income`,
+		// 		Status:  http.StatusBadRequest,
+		// 	}
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	json.NewEncoder(w).Encode(err)
+		// 	return
+		// }
 
 		// create empty expense
-		expense := &models.Expense{}
-		expense.Amount = 0
-		expense.User = *user
-		expense.UserID = user.ID
-		expenseCreated := h.DB.Create(&expense)
-		if expenseCreated.Error != nil {
-			err := models.ErrorResponse{
-				Message: `Error creating empty expense`,
-				Status:  http.StatusBadRequest,
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(err)
-			return
-		}
-
-		// expense.User.Firstname = user.Firstname
-		// expense.User.Lastname = user.Lastname
-		// expense.User.Email = user.Email
-		// expense.User.Mobile = user.Mobile
-		// expense.User.Password = user.Password
-		// h.DB.Save(&expense)
+		// expense := &models.Expense{}
+		// expense.Amount = 0
+		// expense.User = *user
+		// expense.UserID = user.ID
+		// expenseCreated := h.DB.Create(&expense)
+		// if expenseCreated.Error != nil {
+		// 	err := models.ErrorResponse{
+		// 		Message: `Error creating empty expense`,
+		// 		Status:  http.StatusBadRequest,
+		// 	}
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	json.NewEncoder(w).Encode(err)
+		// 	return
+		// }
 
 		// create empty budget
-		budget := &models.Budget{}
-		budget.Amount = 0
-		budget.User = *user
-		budget.UserID = user.ID
-		budgetCreated := h.DB.Create(&budget)
-		if budgetCreated.Error != nil {
-			err := models.ErrorResponse{
-				Message: `Error creating empty budget`,
-				Status:  http.StatusBadRequest,
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(err)
-			return
-		}
-
-		// budget.User.Firstname = user.Firstname
-		// budget.User.Lastname = user.Lastname
-		// budget.User.Email = user.Email
-		// budget.User.Mobile = user.Mobile
-		// budget.User.Password = user.Password
-		// h.DB.Save(&budget)
+		// budget := &models.Budget{}
+		// budget.Amount = 0
+		// budget.User = *user
+		// budget.UserID = user.ID
+		// budgetCreated := h.DB.Create(&budget)
+		// if budgetCreated.Error != nil {
+		// 	err := models.ErrorResponse{
+		// 		Message: `Error creating empty budget`,
+		// 		Status:  http.StatusBadRequest,
+		// 	}
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	json.NewEncoder(w).Encode(err)
+		// 	return
+		// }
 
 		json.NewEncoder(w).Encode(user)
 	}
