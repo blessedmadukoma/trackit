@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	_ "github.com/joho/godotenv/autoload" // helps to autoload the env
@@ -33,10 +32,10 @@ func Init() *gorm.DB {
 
 	fmt.Println("DB Connected!!")
 
-	err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Account{})
-	if err != nil {
-		log.Fatal("Error migrating db:", err)
-	}
+	// err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Account{})
+	// if err != nil {
+	// 	log.Fatal("Error migrating db:", err)
+	// }
 
 	return db
 }

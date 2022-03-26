@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -15,13 +14,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var user = &models.User{}
-
 //SignUp function -- create a new user
 func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Signup Screen")
 	} else if r.Method == "POST" {
+
+		var user = &models.User{}
 		json.NewDecoder(r.Body).Decode(&user)
 
 		err := validate.Struct(user)
@@ -174,29 +173,16 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Login Screen")
 	} else if r.Method == "POST" {
-		body, err := ioutil.ReadAll(r.Body)
+		var user = &models.User{}
+
+		err := json.NewDecoder(r.Body).Decode(&user)
 		if err != nil {
 			log.Fatal(err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(err)
 		}
+		email, password := user.Email, user.Password
 
-		var formatttedBody models.LoginUser
-		err = json.Unmarshal(body, &formatttedBody)
-		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
-			return
-		}
-
-		err = validate.Struct(formatttedBody)
-		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
-			return
-		}
-
-		email, password := formatttedBody.Email, formatttedBody.Password
 		emailBlank, passwordBlank := strings.Trim(email, " ") == "", strings.Trim(password, " ") == ""
 		if emailBlank || passwordBlank {
 			if email == "" && password == "" {
@@ -229,7 +215,8 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 		// user := models.User{}
 
 		// Check if user exists in the database
-		result := h.DB.Where("email=?", email).Find(&user)
+		result := h.DB.Raw("SELECT * FROM users where email = $1", user.Email).Find(&user)
+
 		if result.Error != nil {
 			err := models.ErrorResponse{
 				Message: "No user exists",
@@ -237,6 +224,16 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			}
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		if user.Firstname == "" && user.Lastname == ""{
+			errorResponse := models.ErrorResponse{
+						Message: "No user exists",
+						Status:  http.StatusBadRequest,
+					}
+					w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(errorResponse)
 			return
 		}
 
@@ -251,8 +248,8 @@ func (h handler) SignIn(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 
-			// expiration time = 20 minutes
-			expirationTime := time.Now().Add(20 * time.Minute)
+			// expiration time = 3000 minutes
+			expirationTime := time.Now().Add(3000 * time.Minute)
 			// Create the JWT claims, which includes the username and expiry time
 			claims := &models.Claims{
 				User: *user,
@@ -333,7 +330,7 @@ func (h handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Check if user exists in the database
-	result := h.DB.Table("users").Where("email=?", newResetUser.Email).Find(&newResetUser)
+	result := h.DB.Table("users").Where("email=$1", newResetUser.Email).Find(&newResetUser)
 	if result.Error != nil {
 		err := HandleError(result.Error)
 		w.WriteHeader(http.StatusUnauthorized)
@@ -348,7 +345,7 @@ func (h handler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	newResetUser.New_password = string(new_password)
-	updatedUser := h.DB.Table("users").Where("email=?", newResetUser.Email).Update("password", newResetUser.New_password)
+	updatedUser := h.DB.Table("users").Where("email=$1", newResetUser.Email).Update("password", newResetUser.New_password)
 
 	if updatedUser.Error != nil {
 		err := HandleError(updatedUser.Error)

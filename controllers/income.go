@@ -20,7 +20,7 @@ func (h Handler) GetAllIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, errur := h.DB.Raw(`SELECT * FROM incomes WHERE user_id=?`, claimedUser.ID).Rows()
+	result, errur := h.DB.Raw(`SELECT * FROM incomes WHERE user_id=$1`, claimedUser.ID).Rows()
 
 	if errur != nil {
 		errorResponse := models.ErrorResponse{
