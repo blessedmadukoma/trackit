@@ -20,7 +20,7 @@ func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	}
 
 	account := &models.Account{}
-	result := h.DB.Table("accounts").First(&account).Where("user_id", claimedUser.ID)
+	result := h.DB.Table("accounts").Where("user_id", claimedUser.ID).Find(&account)
 	if result.Error != nil {
 		errorResponse := models.ErrorResponse{
 			Message: `error getting a record`,
@@ -35,7 +35,8 @@ func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	account.User.Firstname = claimedUser.Firstname
 	account.User.Lastname = claimedUser.Lastname
 	account.User.Email = claimedUser.Email
-	account.User.Mobile = claimedUser.Mobile
+	account.User.CreatedAt = claimedUser.CreatedAt
+	account.User.UpdatedAt = claimedUser.UpdatedAt
 
 	json.NewEncoder(w).Encode(account)
 }

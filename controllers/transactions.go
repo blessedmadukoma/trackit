@@ -48,7 +48,7 @@ func (h Handler) GetTransactions(w http.ResponseWriter, r *http.Request) {
 	transactions, transaction := []models.Transactions{}, models.Transactions{}
 
 	for result.Next() {
-		err := result.Scan(&transaction.ID, &transaction.CreatedAt, &transaction.UpdatedAt, &transaction.DeletedAt, &transaction.Category, &transaction.Amount, &transaction.UserID, &transaction.Date, &transaction.Time)
+		err := result.Scan(&transaction.ID, &transaction.CreatedAt, &transaction.UpdatedAt, &transaction.DeletedAt, &transaction.Category, &transaction.Amount, &transaction.Date, &transaction.Time, &transaction.UserID)
 		if err != nil {
 			fmt.Println(err)
 			errResponse := &models.ErrorResponse{

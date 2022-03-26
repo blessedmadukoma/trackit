@@ -199,5 +199,31 @@ func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	account := &models.Account{}
+	getAccount := h.DB.Table("accounts").Where("user_id", claimedUser.ID).Find(&account)
+	if getAccount.Error != nil {
+		err := models.ErrorResponse{
+			Message: `error getting account for current user!`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	account.Amount = account.Amount + income.Amount
+	account.UserID = income.UserID
+
+	savedAccount := h.DB.Save(&account).Where("user_id", claimedUser.ID)
+	if savedAccount.Error != nil {
+		err := models.ErrorResponse{
+			Message: `error saving to accounts`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	json.NewEncoder(w).Encode(income)
 }
