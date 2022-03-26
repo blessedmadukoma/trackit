@@ -66,7 +66,7 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 
 	budget.Budget_name = budgetInput.Budget_name
 	budget.Amount = budgetInput.Amount
-	budget.Description = budgetInput.Budget_name
+	budget.Description = budgetInput.Description
 	budget.StartDate = budgetInput.StartDate
 	budget.EndDate = budgetInput.EndDate
 
