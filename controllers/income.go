@@ -145,10 +145,16 @@ func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
+	if income.Date == "" {
+		err := models.ErrorResponse{
+			Message: `Date must be set!`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(err.Status)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
 
-	// date := income.Date
-
-	// assign some values
 	income.User.ID = claimedUser.ID
 	income.User.Firstname = claimedUser.Firstname
 	income.User.Lastname = claimedUser.Lastname
