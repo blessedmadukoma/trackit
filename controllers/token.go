@@ -83,6 +83,16 @@ func Dashboard(w http.ResponseWriter, r *http.Request) (models.User, models.Erro
 		return models.User{}, err
 	}
 
+	if claims.User.Firstname == "" && claims.User.Lastname == "" {
+		errResponse := models.ErrorResponse{
+			Message: `no user!`,
+			Status:  http.StatusUnauthorized,
+		}
+		// w.WriteHeader(http.StatusUnauthorized)
+		// json.NewEncoder(w).Encode(err)
+		return models.User{}, errResponse
+	}
+
 	// json.NewEncoder(w).Encode(claims.User)
 	return claims.User, models.ErrorResponse{}
 }

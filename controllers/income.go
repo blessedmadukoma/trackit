@@ -155,6 +155,19 @@ func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// update accounts
+	accounts := &models.Account{}
+	existingBudget := h.DB.Table("accounts").Where("user_id", claimedUser.ID).Find(&accounts)
+	if existingBudget.Error != nil {
+		errResponse := models.ErrorResponse{
+			Message: `error getting your balance account`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
 	income.User.ID = claimedUser.ID
 	income.User.Firstname = claimedUser.Firstname
 	income.User.Lastname = claimedUser.Lastname
@@ -199,6 +212,7 @@ func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Update the accounts table
 	account := &models.Account{}
 	getAccount := h.DB.Table("accounts").Where("user_id", claimedUser.ID).Find(&account)
 	if getAccount.Error != nil {

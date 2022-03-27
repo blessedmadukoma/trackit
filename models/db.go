@@ -30,9 +30,7 @@ func Init() *gorm.DB {
 		panic(err.Error())
 	}
 
-	fmt.Println("DB Connected!!")
-
-	// err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Account{})
+	// err = db.AutoMigrate(&User{}, &Expense{}, &Budget{}, &Transactions{}, &Income{}, &Account{}, &Savings{})
 	// if err != nil {
 	// 	log.Fatal("Error migrating db:", err)
 	// }

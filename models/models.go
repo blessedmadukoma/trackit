@@ -32,13 +32,14 @@ type Expense struct {
 
 type Budget struct {
 	gorm.Model
-	Budget_name string  `json:"budget_name" gorm:"not null"`
-	Amount      float64 `json:"amount" gorm:"not null"`
-	Description string  `json:"description" gorm:"not null"`
-	StartDate   string  `json:"startDate" gorm:"not null"`
-	EndDate     string  `json:"endDate" gorm:"not null"`
-	UserID      uint
-	User        User
+	Budget_name   string  `json:"budget_name" gorm:"not null"`
+	InitialAmount float64 `json:"initial_amount" gorm:"not null"`
+	CurrentAmount float64 `json:"current_amount" gorm:"not null"`
+	Description   string  `json:"description" gorm:"not null"`
+	StartDate     string  `json:"startDate" gorm:"not null"`
+	EndDate       string  `json:"endDate" gorm:"not null"`
+	UserID        uint
+	User          User
 	// User        User  `gorm:"foreignkey:UserID;association_foreignkey:ID" json:"UserID"`
 }
 
@@ -46,11 +47,18 @@ type Transactions struct {
 	gorm.Model
 	Category string  `json:"category" gorm:"not null"`
 	Amount   float64 `json:"amount" gorm:"not null"`
-	Date string `json:"date" gorm:"not null"`
-	Time string `json:"time" gorm:"not null"`
+	Date     string  `json:"date" gorm:"not null"`
+	Time     string  `json:"time" gorm:"not null"`
 	UserID   uint
 	User     User
 	// User        User  `gorm:"foreignkey:UserID;association_foreignkey:ID" json:"UserID"`
+}
+
+type Savings struct {
+	gorm.Model
+	Amount float64 `json:"amount" gorm:"not null"`
+	UserID uint
+	User   User
 }
 
 type Income struct {

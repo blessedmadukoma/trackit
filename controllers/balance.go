@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/blessedmadukoma/trackit-chima/models"
@@ -30,6 +31,8 @@ func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(errorResponse)
 		return
 	}
+
+	fmt.Println(account.Amount)
 
 	account.User.ID = claimedUser.ID
 	account.User.Firstname = claimedUser.Firstname

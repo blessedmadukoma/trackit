@@ -55,17 +55,67 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 	budget := &models.Budget{}
 	result := h.DB.Table("budgets").First(&budget).Where("user_id", claimedUser.ID)
 	if result.Error != nil {
-		err := models.ErrorResponse{
+		errResponse := models.ErrorResponse{
 			Message: `error getting budget`,
 			Status:  http.StatusBadRequest,
 		}
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err)
+		json.NewEncoder(w).Encode(errResponse)
 		return
 	}
 
+	if budgetInput.InitialAmount < float64(10000) {
+		errorResponse := models.ErrorResponse{
+			Message: `Budget is lower than 10000.`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(errorResponse.Status)
+		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	// get balance and check if the budget amount is greater than the balance
+	balance := &models.Account{}
+	result = h.DB.Table("accounts").First(&balance).Where("user_id", claimedUser.ID)
+	if result.Error != nil {
+		errResponse := models.ErrorResponse{
+			Message: `error getting accounts for user`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+	if budgetInput.InitialAmount > balance.Amount {
+		errResponse := models.ErrorResponse{
+			Message: `Your budget cannot be greater than balance. Multiply your income :)`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	savings := &models.Savings{}
+	savings.Amount = (0.05 * budgetInput.InitialAmount)
+	savings.UserID = claimedUser.ID
+
+	createSavings := h.DB.Create(&savings).Where("user_id", claimedUser.ID)
+	if createSavings.Error != nil {
+		errorResponse := models.ErrorResponse{
+			Message: `error creating savings`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(errorResponse.Status)
+		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	moneyNotSaved := (budgetInput.InitialAmount - (0.05 * budgetInput.InitialAmount))
+
 	budget.Budget_name = budgetInput.Budget_name
-	budget.Amount = budgetInput.Amount
+	budget.InitialAmount = moneyNotSaved
+	budget.CurrentAmount = moneyNotSaved // creates the budget with the same amount as the money that excludes the savings
 	budget.Description = budgetInput.Description
 	budget.StartDate = budgetInput.StartDate
 	budget.EndDate = budgetInput.EndDate

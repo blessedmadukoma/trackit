@@ -75,13 +75,37 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 		// Create an empty account
 		account := &models.Account{}
-		account.Amount = 0
-		account.User = *user
+		account.Amount = float64(0)
 		account.UserID = user.ID
 		accountCreated := h.DB.Create(&account)
 		if accountCreated.Error != nil {
 			err := models.ErrorResponse{
 				Message: `Error creating empty account`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(err)
+			return
+		}
+
+		date := time.Now().UTC()
+		currentDate := fmt.Sprint(date.Day()) + "/" + fmt.Sprint(int(date.UTC().Month())) + "/" + fmt.Sprint(date.UTC().Year())
+		endDate := fmt.Sprint(date.Day()) + "/" + fmt.Sprint(int(date.UTC().Month())+1) + "/" + fmt.Sprint(date.UTC().Year())
+
+		// create empty budget
+		budget := &models.Budget{}
+		budget.InitialAmount = 0
+		budget.CurrentAmount = 0
+		budget.Budget_name = "Only Budget"
+		budget.Description = "Only Budget For User"
+		budget.StartDate = currentDate
+		budget.EndDate = endDate
+		budget.UserID = user.ID
+		budgetCreated := h.DB.Create(&budget)
+		if budgetCreated.Error != nil {
+			fmt.Println(budgetCreated.Error)
+			err := models.ErrorResponse{
+				Message: `Error creating empty budget`,
 				Status:  http.StatusBadRequest,
 			}
 			w.WriteHeader(http.StatusBadRequest)
@@ -114,22 +138,6 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		// if expenseCreated.Error != nil {
 		// 	err := models.ErrorResponse{
 		// 		Message: `Error creating empty expense`,
-		// 		Status:  http.StatusBadRequest,
-		// 	}
-		// 	w.WriteHeader(http.StatusBadRequest)
-		// 	json.NewEncoder(w).Encode(err)
-		// 	return
-		// }
-
-		// create empty budget
-		// budget := &models.Budget{}
-		// budget.Amount = 0
-		// budget.User = *user
-		// budget.UserID = user.ID
-		// budgetCreated := h.DB.Create(&budget)
-		// if budgetCreated.Error != nil {
-		// 	err := models.ErrorResponse{
-		// 		Message: `Error creating empty budget`,
 		// 		Status:  http.StatusBadRequest,
 		// 	}
 		// 	w.WriteHeader(http.StatusBadRequest)

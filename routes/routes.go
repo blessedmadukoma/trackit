@@ -41,6 +41,9 @@ func Handlers() *mux.Router {
 	// transactions
 	router.HandleFunc("/transactions", h.GetTransactions).Methods("GET")
 
+	// Savings
+	router.HandleFunc("/savings", h.GetSavings).Methods("GET")
+
 	// user routes
 	userRouter := router.PathPrefix("/user").Subrouter()
 	userRouter.Use(controllers.JwtVerify)

@@ -151,6 +151,61 @@ func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if user already has a budget
+	userBudget := &models.Budget{}
+	existingBudget := h.DB.Table("budgets").Where("user_id", claimedUser.ID).Find(&userBudget)
+	if existingBudget.Error != nil {
+		errResponse := models.ErrorResponse{
+			Message: `error getting existing user's budget`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	if userBudget.Budget_name == "" && userBudget.Description == ""  {
+		errResponse := models.ErrorResponse{
+			Message: `You must have a budget before creating an expense`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+	if userBudget.InitialAmount == 0 {
+		errResponse := models.ErrorResponse{
+			Message: `You must have a budget before creating an expense`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	if expense.Amount > userBudget.CurrentAmount {
+		errResponse := models.ErrorResponse{
+			Message: `Your expense is greater than your budget`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
+	userBudget.CurrentAmount = userBudget.CurrentAmount - expense.Amount
+	userBudget.UserID = claimedUser.ID
+	saveBudget := h.DB.Save(&userBudget)
+	if saveBudget.Error != nil {
+		err := &models.ErrorResponse{
+			Message: `error updating budget from expense`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
 	// assign some values
 	expense.User.ID = claimedUser.ID
 	expense.User.Firstname = claimedUser.Firstname
