@@ -96,14 +96,53 @@ func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	balance.Amount = balance.Amount - budgetInput.InitialAmount
+	balResult := h.DB.Save(&balance)
+	if balResult.Error != nil {
+		errResponse := &models.ErrorResponse{
+			Message: `error updating account balance`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(errResponse)
+		return
+	}
+
 	savings := &models.Savings{}
+	savingsDB := h.DB.Table("accounts").Where("user_id", claimedUser.ID).Find(&savings)
+	if savingsDB.Error != nil {
+		errorResponse := models.ErrorResponse{
+			Message: `error getting savings!`,
+			Status:  http.StatusBadRequest,
+		}
+		w.WriteHeader(errorResponse.Status)
+		json.NewEncoder(w).Encode(errorResponse)
+		return
+	}
+
+	if savings.Amount == 0 {
+		savings.Amount = (0.05 * budgetInput.InitialAmount)
+		savings.UserID = claimedUser.ID
+	
+		createSavings := h.DB.Create(&savings).Where("user_id", claimedUser.ID)
+		if createSavings.Error != nil {
+			errorResponse := models.ErrorResponse{
+				Message: `error creating savings`,
+				Status:  http.StatusBadRequest,
+			}
+			w.WriteHeader(errorResponse.Status)
+			json.NewEncoder(w).Encode(errorResponse)
+			return
+		}
+	}
+
 	savings.Amount = (0.05 * budgetInput.InitialAmount)
 	savings.UserID = claimedUser.ID
 
-	createSavings := h.DB.Create(&savings).Where("user_id", claimedUser.ID)
+	createSavings := h.DB.Save(&savings)
 	if createSavings.Error != nil {
 		errorResponse := models.ErrorResponse{
-			Message: `error creating savings`,
+			Message: `error updating savings`,
 			Status:  http.StatusBadRequest,
 		}
 		w.WriteHeader(errorResponse.Status)
