@@ -19,6 +19,7 @@ func Handlers() *mux.Router {
 
 	// auth routes
 	authRouter := router.PathPrefix("/auth").Subrouter()
+	authRouter.Use(CommonMiddleware)
 	authRouter.HandleFunc("/signup", h.SignUp).Methods("POST", "GET")
 	authRouter.HandleFunc("/signin", h.SignIn).Methods("POST", "GET")
 	authRouter.HandleFunc("/logout", h.LogOut).Methods("POST")
@@ -46,6 +47,7 @@ func Handlers() *mux.Router {
 
 	// user routes
 	userRouter := router.PathPrefix("/user").Subrouter()
+	userRouter.Use(CommonMiddleware)
 	userRouter.Use(controllers.JwtVerify)
 	// userRouter.HandleFunc("/dashboard", h.Dashboard)
 	userRouter.HandleFunc("/users", h.FetchUsers).Methods("GET")
