@@ -10,7 +10,7 @@ import (
 	"github.com/blessedmadukoma/trackit-chima/models"
 )
 
-func (h Handler) GetTransactions(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetTransactions(w http.ResponseWriter, r *http.Request) {
 	// display transactions
 
 	claimedUser, err := Dashboard(w, r)

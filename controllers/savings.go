@@ -7,7 +7,7 @@ import (
 	"github.com/blessedmadukoma/trackit-chima/models"
 )
 
-func (h Handler) GetSavings(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetSavings(w http.ResponseWriter, r *http.Request) {
 	// get budget
 
 	claimedUser, err := Dashboard(w, r)

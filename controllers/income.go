@@ -12,7 +12,7 @@ import (
 
 // Income screen
 // Get all income
-func (h Handler) GetAllIncome(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetAllIncome(w http.ResponseWriter, r *http.Request) {
 	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
@@ -80,7 +80,7 @@ func (h Handler) GetAllIncome(w http.ResponseWriter, r *http.Request) {
 }
 
 // Get Income --> update this route so that it is dynamic /income/{id}
-func (h Handler) GetIncome(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetIncome(w http.ResponseWriter, r *http.Request) {
 
 	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
@@ -111,7 +111,7 @@ func (h Handler) GetIncome(w http.ResponseWriter, r *http.Request) {
 }
 
 // Add income screen
-func (h Handler) AddIncome(w http.ResponseWriter, r *http.Request) {
+func (h handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 	// add amount, date gotten from json
 	var Validator = validator.New()
 

@@ -10,7 +10,7 @@ import (
 
 // Balance
 // Get Balance for Dashboard -- should be get all your balance -> you should have only one
-func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	// get balance from account table
 
 	claimedUser, err := Dashboard(w, r)
@@ -46,11 +46,11 @@ func (h Handler) GetBalance(w http.ResponseWriter, r *http.Request) {
 
 // Create Balance
 // for every newly signed up user, they should have a balance of 0 by default, meaning the system autocreates a record for them
-func (h Handler) CreateBalance(w http.ResponseWriter, r *http.Request) {
+func (h handler) CreateBalance(w http.ResponseWriter, r *http.Request) {
 	// create balance - to be called at every successful sign up attempt
 }
 
 // Update Balance -- not sure this is useful because when they add income and expense, our balance will be affected and we will update the figure in that function either income or expense but the getBalance does the update since they are not manually updating it
-func (h Handler) UpdateBalance(w http.ResponseWriter, r *http.Request) {
+func (h handler) UpdateBalance(w http.ResponseWriter, r *http.Request) {
 	// update balance - to be called at every transaction happening
 }

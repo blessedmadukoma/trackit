@@ -25,7 +25,7 @@ type handler struct {
 	DB *gorm.DB
 }
 
-type Handler = handler
+// type Handler = handler
 
 func New(db *gorm.DB) handler {
 	return handler{db}

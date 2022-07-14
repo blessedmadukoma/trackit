@@ -9,7 +9,7 @@ import (
 
 // Budget Screen
 // Get Budget
-func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 	// get budget
 
 	claimedUser, err := Dashboard(w, r)
@@ -41,7 +41,7 @@ func (h Handler) GetBudget(w http.ResponseWriter, r *http.Request) {
 }
 
 // Update Budget - this is the only function working: since they have only one budget
-func (h Handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
+func (h handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 
 	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {

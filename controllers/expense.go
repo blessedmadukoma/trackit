@@ -14,7 +14,7 @@ import (
 // Expense Screen
 
 // Get all expenses
-func (h Handler) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 	claimedUser, err := Dashboard(w, r)
 	if err.Message != "" {
 		w.WriteHeader(err.Status)
@@ -82,7 +82,7 @@ func (h Handler) GetAllExpenses(w http.ResponseWriter, r *http.Request) {
 }
 
 // Get Expense
-func (h Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 	// get expense from Expense table
 
 	claimedUser, err := Dashboard(w, r)
@@ -113,7 +113,7 @@ func (h Handler) GetExpense(w http.ResponseWriter, r *http.Request) {
 }
 
 // Add expense
-func (h Handler) AddExpense(w http.ResponseWriter, r *http.Request) {
+func (h handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 	// Enter amount, description, select date (purchased), and category gotten from JSON
 
 	var Validator = validator.New()
