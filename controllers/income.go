@@ -115,7 +115,7 @@ func (h handler) AddIncome(w http.ResponseWriter, r *http.Request) {
 	// add amount, date gotten from json
 	var Validator = validator.New()
 
-	income := &models.Income{}
+	income := models.Income{}
 	json.NewDecoder(r.Body).Decode(&income)
 
 	validationError := Validator.Struct(income)

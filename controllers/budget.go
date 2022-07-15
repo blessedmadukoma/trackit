@@ -49,7 +49,7 @@ func (h handler) UpdateBudget(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err)
 		return
 	}
-	budgetInput := &models.Budget{}
+	budgetInput := models.Budget{}
 	json.NewDecoder(r.Body).Decode(&budgetInput)
 
 	budget := &models.Budget{}

@@ -25,10 +25,10 @@ func Handlers() *mux.Router {
 	authRouter.HandleFunc("/logout", h.LogOut).Methods("POST")
 	authRouter.HandleFunc("/reset-password", h.ResetPassword).Methods("PUT")
 
-// dashboard routes
-// balance
+	// dashboard routes
+	// balance
 	router.HandleFunc("/balance", h.GetBalance).Methods("GET")
-// income
+	// income
 	router.HandleFunc("/income", h.GetIncome).Methods("GET")
 	router.HandleFunc("/incomes", h.GetAllIncome).Methods("GET")
 	router.HandleFunc("/income", h.AddIncome).Methods("POST")

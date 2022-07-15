@@ -16,6 +16,7 @@ import (
 
 //SignUp function -- create a new user
 func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
+
 	if r.Method == "GET" {
 		json.NewEncoder(w).Encode("Signup Screen")
 	} else if r.Method == "POST" {
@@ -74,7 +75,8 @@ func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Create an empty account
-		account := &models.Account{}
+		// account := &models.Account{}
+		account := models.Account{}
 		account.Amount = float64(0)
 		account.UserID = user.ID
 		accountCreated := h.DB.Create(&account)

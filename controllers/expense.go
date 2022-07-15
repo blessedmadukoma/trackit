@@ -118,7 +118,7 @@ func (h handler) AddExpense(w http.ResponseWriter, r *http.Request) {
 
 	var Validator = validator.New()
 
-	expense := &models.Expense{}
+	expense := models.Expense{}
 	json.NewDecoder(r.Body).Decode(&expense)
 
 	validationError := Validator.Struct(expense)

@@ -31,7 +31,7 @@ func (h handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var id = params["id"]
 	h.DB.First(&user, id)
-	json.NewDecoder(r.Body).Decode(user)
+	json.NewDecoder(r.Body).Decode(&user)
 	h.DB.Save(&user)
 	json.NewEncoder(w).Encode(&user)
 }

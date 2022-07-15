@@ -104,3 +104,11 @@ type ResetUser struct {
 // 	Private TypeEnum = "Private"
 // 	Secret  TypeEnum = "Secret"
 // )
+
+// I tried doing factory function
+// func (income Income) NewIncome() Income {
+// 	return Income{
+// 		Amount: income.Amount,
+// 		Date:   income.Date,
+// 	}
+// }
