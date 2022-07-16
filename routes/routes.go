@@ -15,6 +15,8 @@ func Handlers() *mux.Router {
 	DB := db.Init()
 	h := controllers.New(DB)
 
+	router.Use(CommonMiddleware)
+
 	router.HandleFunc("/", h.Index).Methods("GET")
 
 	// auth routes
