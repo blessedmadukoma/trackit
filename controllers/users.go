@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/blessedmadukoma/trackit-chima/models"
@@ -15,7 +16,13 @@ var validate = validator.New()
 // welcome function
 func (h handler) Index(w http.ResponseWriter, r *http.Request) {
 
-	value := "Index Page"
+	value :=  map[string]string{
+		// "name": "Dummy Data",
+		// "age": "18",
+		// "email": "dummyd@gmail.com",
+		"message": "Index page",
+		"status": fmt.Sprintf("%d", http.StatusOK),
+	}
 	json.NewEncoder(w).Encode(value)
 }
 

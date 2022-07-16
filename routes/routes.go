@@ -15,7 +15,7 @@ func Handlers() *mux.Router {
 	DB := db.Init()
 	h := controllers.New(DB)
 
-	router.HandleFunc("/index", h.Index)
+	router.HandleFunc("/", h.Index).Methods("GET")
 
 	// auth routes
 	authRouter := router.PathPrefix("/auth").Subrouter()
