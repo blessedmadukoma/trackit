@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/blessedmadukoma/trackit-chima/models"
@@ -13,17 +14,43 @@ import (
 
 var validate = validator.New()
 
+type loginDetails struct {
+	Username string
+	Password string
+}
+
 // welcome function
 func (h handler) Index(w http.ResponseWriter, r *http.Request) {
 
-	value :=  map[string]string{
-		// "name": "Dummy Data",
-		// "age": "18",
-		// "email": "dummyd@gmail.com",
-		"message": "Index page",
-		"status": fmt.Sprintf("%d", http.StatusOK),
+	if r.Method == "GET" {
+		value := map[string]string{
+			// "name": "Dummy Data",
+			// "age": "18",
+			// "email": "dummyd@gmail.com",
+			"message": "Index page",
+			"status":  fmt.Sprintf("%d", http.StatusOK),
+		}
+		json.NewEncoder(w).Encode(value)
+	} else {
+		user := &loginDetails{}
+
+		json.NewDecoder(r.Body).Decode(&user)
+
+		log.Println(*user)
+
+		username, password := user.Username, user.Password
+
+		response := map[string]interface{}{
+			"status": fmt.Sprintf("%d", http.StatusOK),
+			"data": map[string]string{
+				"username": username,
+				"password": password,
+			},
+		}
+
+		json.NewEncoder(w).Encode(response)
+		return
 	}
-	json.NewEncoder(w).Encode(value)
 }
 
 func (h handler) FetchUsers(w http.ResponseWriter, r *http.Request) {
