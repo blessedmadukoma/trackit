@@ -49,7 +49,7 @@ func Handlers() *mux.Router {
 	// user routes
 	userRouter := router.PathPrefix("/user").Subrouter()
 	userRouter.Use(CommonMiddleware)
-	// userRouter.Use(controllers.JwtVerify)
+	userRouter.Use(controllers.JwtVerify)
 	// userRouter.HandleFunc("/dashboard", h.Dashboard)
 	userRouter.HandleFunc("/users", h.FetchUsers).Methods("GET", "OPTIONS")
 	userRouter.HandleFunc("/{id}", h.GetUser).Methods("GET", "OPTIONS")
