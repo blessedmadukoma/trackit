@@ -18,7 +18,12 @@ import (
 func (h handler) SignUp(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		json.NewEncoder(w).Encode("Signup Screen")
+		err := json.NewEncoder(w).Encode("Signup Screen")
+		if err != nil {
+			log.Fatal("Error encoding get signup screen:", err)
+			return
+		}
+		return
 	} else if r.Method == "POST" {
 
 		var user = &models.User{}

@@ -14,15 +14,20 @@ import (
 )
 
 // Date Formatting
-const (
-	DDMMYYYYhhmmss = "01/02/2006 15:04:05"
-	DDMMYYYY = "01/02/2006"
-	hhmm = "15:04"
-)
+// const (
+// 	DDMMYYYYhhmmss = "01/02/2006 15:04:05"
+// 	DDMMYYYY = "01/02/2006"
+// 	hhmm = "15:04"
+// )
 
 // Dependency injection
 type handler struct {
 	DB *gorm.DB
+}
+
+// Context Value struct
+type contextValue struct {
+	key string
 }
 
 // type Handler = handler
@@ -78,9 +83,11 @@ func JwtVerify(next http.Handler) http.Handler {
 			return
 		}
 
-		var contextValue = "user"
+		contextV := contextValue {
+			key: "user",
+		}
 
-		ctx := context.WithValue(r.Context(), contextValue, tk)
+		ctx := context.WithValue(r.Context(), contextV, tk)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
