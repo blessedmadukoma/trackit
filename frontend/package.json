@@ -1,0 +1,12 @@
+{
+  "name": "trackit-frontend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "license": "MIT",
+  "scripts": {
+    "build:tailwinds": "tailwind build src/style.css -o styles.css --watch"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.2.1"
+  }
+}
