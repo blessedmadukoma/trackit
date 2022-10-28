@@ -8,6 +8,7 @@ TrackIT - Web Based Accountability Management System
 Github: https://github.com/blessedmadukoma/trackit
 
 Live: https://trackit-budget.vercel.app
+
 Backend API: https://trackit-budget.vercel.app
 
 ## Project Description
@@ -48,6 +49,5 @@ This is the a web-based budget tracker to track finances. The site allows author
     - Ajike Chimaobi (Designer)
 
 ## Important note:
-   1. To push the backend to Heroku:
-        - After adding, commiting and pushing to Github, run the command: `git subtree push --prefix backend heroku main` . This pushes the backend directory to Heroku
-  
+   1. To push the backend directory to Heroku:
+        - After adding, commiting and pushing to Github, run the command: `git subtree push --prefix backend heroku main`
