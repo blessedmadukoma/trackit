@@ -13,38 +13,38 @@ Backend API: https://trackit-budget.vercel.app
 
 ## Project Description
 This is the a web-based budget tracker to track finances. The site allows authorized users to manage their finances by creating budgets, adding the transactions and visualizing each income and expense.
-<hr><br/>
+<hr>
 
 ## Project Tools
    - PostgreSQL ElephantDB
    - VScode
-<hr><br/>
+<hr>
 
 ## Programming Languagues/framework/DBMS
  - HTML
  - TailwindCSS
  - JavaScript
  - Go(Golang)
-<hr><br/>
+<hr>
 
 ## Deployed
  The project is deployed on [Vercel](https://trackit-budget.vercel.app) server.
-<hr><br/>
+<hr>
 
 ## Screenshots
-<br/>
 
+Landing Page:
 ![Landing page](frontend/assets/imgs/trackit-budget-dashboard.png)
 
 ## APIs Needed
     - Backend API
-<hr><br/>
+<hr>
 
 ## External Resources needed
     - PostgreSQL database connection
-<hr><br/>
+<hr>
 
-# Contributors
+## Contributors
     - Blessed Madukoma (Developer)
     - Ajike Chimaobi (Designer)
 
