@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      zoom: 0.9;
+    }
+  </style>
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <!-- <link
+    href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+    rel="stylesheet"> -->
+
+</head>
+
+<body class="bg-gray-200 font-poppins">
+
+  <section class="flex">
+    <section class="w-48 bg-white border-r border-gray-300">
+      <a href="./index.html">
+        <section class="flex m-5 mx-7 items-center space-x-3 mb-16">
+         <img src="./assets/svg/trackit-logo.svg" alt="TrackIT">
+         <span class="text-purple-700" style="color: #7C4CE0;">TrackIT</span>
+       </section>
+       </a>
+
+      <section class="space-y-4">
+        <div class="bg-violet-300 py-3 px-5">
+         <div class="flex items-center space-x-3 ">
+          <img src="./assets/svg/dashboard-colored.svg" alt="">
+          <a href="./index.html"><span class="text-violet-700 font-medium hover:text-violet-700">Dashboard</span></a>
+         </div>
+        </div>
+    
+        <div class="flex items-center space-x-3  py-3 px-4">
+         <img src="./assets/svg/budget.svg" alt="" class="opacity-80">
+         <a href="./budgets.html"><span class="text-gray-500 font-medium hover:text-violet-700">Budgets</span></a>
+        </div>
+    
+        <div class="flex items-center space-x-3  py-3 px-4">
+         <img src="./assets/svg/visualization.svg" alt="" class="opacity-80">
+         <a href="./visualization.html"><span class="text-gray-500 font-medium hover:text-violet-700">Visualization</span></a>
+        </div>
+    
+        <div class="flex items-center space-x-3  py-3 px-4">
+         <img src="./assets/svg/transaction.svg" alt="" class="opacity-80">
+         <a href="./transactions.html"><span class="text-gray-500 font-medium hover:text-violet-700">Transactions</span></a>
+        </div>
+    
+        <div class="flex items-center space-x-3  py-3 px-4">
+         <img src="./assets/svg/cards.svg" alt="" class="opacity-80">
+         <a href="./cards.html"><span class="text-gray-500 font-medium hover:text-violet-700">Cards</span></a>
+        </div>
+    
+        <div class="flex items-center space-x-3  py-3 px-4">
+         <img src="./assets/svg/logout.svg" alt="" class="opacity-80">
+         <a href="./logout.html"><span class="text-gray-500 font-medium hover:text-violet-700">Logout</span></a>
+        </div>
+       </section>
+    </section>
+
+    <!-- main content area -->
+    <section class="mx-14 my-5 flex-1">
+
+      <!-- top nav and search section -->
+      <section class="flex justify-end">
+        <section class="flex items-center justify-items-end space-x-3">
+          <div class="flex h-8 items-center rounded-full bg-white overflow-hidden">
+            <input type="text" class=" h-8 p-2 placeholder:text-xs  rounded-full placeholder:items-center"
+              placeholder="Search Transaction">
+
+            <img class="w-5 h-5 mr-3 items-center" src="./assets/svg/search.svg" alt="">
+          </div>
+          <div>
+            <img src="./assets/svg/notification.svg" class="w-5 h-5" alt="">
+          </div>
+          <span class="text-gray-500">|</span>
+          <div>
+            <img src="./assets/imgs/avatar.png" class="w-8 h-8" alt="">
+          </div>
+        </section>
+      </section>
+      <!-- end of top nav and search section -->
+
+      <!-- welcome banner -->
+      <section class="my-6 text-violet-500 font-medium text-xl tracking-wide">Welcome, Jacob</section>
+      <!-- end of welcome banner -->
+
+      <!-- transactions section -->
+      <section class=" rounded-lg bg-white flex justify-center space-x-12 p-5">
+        <section class="flex flex-col items-center">
+          <div class="bg-red-100 w-20 h-20 rounded-full flex justify-center">
+            <img src="./assets/svg/minus.svg" alt="">
+          </div>
+          <span class="block mt-2 tracking-wide ">Add expense</span>
+        </section>
+
+        <section class="flex flex-col items-center">
+          <div class="bg-green-100 w-20 h-20 rounded-full flex justify-center">
+            <img src="./assets/svg/plus.svg" alt="">
+          </div>
+          <span class="block mt-2 tracking-wide">Add income</span>
+        </section>
+
+        <section class="flex flex-col items-center">
+          <div class="bg-blue-100 w-20 h-20 rounded-full flex justify-center">
+            <img src="./assets/svg/create-budget.svg" alt="">
+          </div>
+          <span class="block mt-2 tracking-wide">Create budget</span>
+        </section>
+
+      </section>
+      <!-- end of transactions section -->
+
+      <!-- balance and details section -->
+      <section class="capitalize flex space-x-6 mt-10 mb-14">
+        <section class="w-1/5 bg-white rounded-lg p-4">
+          <span class="block text-sm">Total Balance</span>
+          <div class="flex items-center">
+            <img class="py-3" src="./assets/svg/total-balance.svg" alt="">
+            <span class="font-semibold text-lg pl-4">&#8358; 100,000</span>
+          </div>
+        </section>
+
+        <section class="w-1/5 bg-white rounded-lg p-4">
+          <span class="block text-sm">Budget</span>
+          <div class="flex items-center">
+            <img class="py-3" src="./assets/svg/budget-outline.svg" alt="">
+            <span class="font-semibold text-lg pl-4">&#8358; 0</span>
+          </div>
+        </section>
+
+        <section class="w-1/5 bg-white rounded-lg p-4">
+          <span class="block text-sm">Income</span>
+          <div class="flex items-center">
+            <img class="py-3" src="./assets/svg/income-up.svg" alt="">
+            <span class="font-semibold text-lg pl-4">&#8358; 100,000</span>
+          </div>
+        </section>
+
+        <section class="w-1/5 bg-white rounded-lg p-4">
+          <span class="block text-sm">Expenses</span>
+          <div class="flex items-center">
+            <img class="py-3" src="./assets/svg/expense-down.svg" alt="">
+            <span class="font-semibold text-lg pl-4">&#8358; 0</span>
+          </div>
+        </section>
+
+        <section class="w-1/5 bg-white rounded-lg p-4">
+          <span class="block text-sm">Savings</span>
+          <div class="flex items-center">
+            <img class="py-3" src="./assets/svg/savings.svg" alt="">
+            <span class="font-semibold text-lg pl-4">&#8358; 0</span>
+          </div>
+        </section>
+
+
+      </section>
+      <!-- end of balance and details section -->
+
+      <!-- history and graph section -->
+      <section class="flex space-x-6">
+        <section class="bg-white w-1/2 p-4 rounded-lg">
+          <span class="block tracking-wide">Transaction history</span>
+          <!-- <span class="block text-sm text-gray-400 pt-4">Today</span>
+
+          <div class="flex items-center justify-between mt-2">
+            <div class="flex space-x-3">
+              <img src="./assets/svg/total-balance.svg" alt="">
+              <div>
+                <span class="block">income</span>
+                <span class="block">02:00 PM</span>
+              </div>
+            </div>
+
+            <span class="text-green-500 text-md">&#8358; 100,000</span>
+          </div> -->
+
+          <div class="flex justify-center items-center">
+            <span class="text-gray-400 p-24">No Recent Activities</span>
+          </div>
+        </section>
+        <section class="bg-white w-1/2 p-4 rounded-lg">
+          <span class="block tracking-wide">Data Overview</span>
+
+          <canvas id="chart2"></canvas>
+        </section>
+      </section>
+      <!-- end of history and graph section -->
+
+    </section>
+    <!-- end of main content area -->
+  </section>
+
+
+  <!-- chart.js -->
+  <script>
+    // const ctx = document.getElementById('chart1').getContext('2d');
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    // const ctx3 = document.getElementById('chart3').getContext('2d');
+    // const ctx4 = document.getElementById('chart4').getContext('2d');
+    // const ctx5 = document.getElementById('chart5').getContext('2d');
+
+
+    /*
+    // chart1 code
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    */
+
+    // chart2 code
+    const myChart2 = new Chart(ctx2, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          // label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3, 10],
+          backgroundColor: [
+            // 'rgba(255, 99, 132, 0.2)',
+            // 'rgba(54, 162, 235, 0.2)',
+            // 'rgba(255, 206, 86, 0.2)',
+            // 'rgba(75, 192, 192, 0.2)',
+            // 'rgba(153, 102, 255, 0.2)',
+            // 'rgba(255, 159, 64, 0.2)',
+            // 'rgba(100, 105, 20, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(200, 99, 20, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          // y: {
+          //   beginAtZero: true
+          // }
+        }
+      }
+    });
+
+    /*
+    // chart3 code
+    const myChart3 = new Chart(ctx3, {
+      type: 'doughnut',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // chart4 code
+    const myChart4 = new Chart(ctx4, {
+      type: 'radar',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // chart5 code
+    const myChart5 = new Chart(ctx5, {
+      type: 'doughnut',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          // leave empty to remove the scales or straight lines
+        }
+      }
+    });
+
+    */
+
+
+  </script>
+</body>
+
+</html>
