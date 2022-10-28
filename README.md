@@ -49,5 +49,5 @@ Landing Page:
     - Ajike Chimaobi (Designer)
 
 ## Important note:
-   1. To push the backend directory to Heroku:
+To push the backend directory to Heroku:
         - After adding, commiting and pushing to Github, run the command: `git subtree push --prefix backend heroku main`
