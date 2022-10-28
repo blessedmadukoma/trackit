@@ -49,5 +49,7 @@ Landing Page:
     - Ajike Chimaobi (Designer)
 
 ## Important note:
-To push the backend directory to Heroku:
+1. To push the backend directory to Heroku:
         - After adding, commiting and pushing to Github, run the command: `git subtree push --prefix backend heroku main`
+
+2. package.json is in .gitnore because I am using TailwindCSS' CDN instead of yarn or npm.
