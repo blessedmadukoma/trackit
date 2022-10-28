@@ -2,3 +2,4 @@ node_modules/
 *.lock
 .DS_Store
 package.json
+# package.json is here because I am using CDN
