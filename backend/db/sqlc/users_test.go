@@ -36,10 +36,12 @@ func createRandomUser(t *testing.T) User {
 	return userAccount
 }
 
+// TestCreateUserAccount tests the CreateUserAccount method which creates a new user's account
 func TestCreateUserAccount(t *testing.T) {
 	createRandomUser(t)
 }
 
+// TestGetUserAccountByID tests the GetUserAccountByID method which gets a user's account information through the ID
 func TestGetUserAccountByID(t *testing.T) {
  userAccount1 := createRandomUser(t)
 
@@ -55,11 +57,37 @@ func TestGetUserAccountByID(t *testing.T) {
 	require.WithinDuration(t, userAccount1.CreatedAt, userAccount2.CreatedAt, time.Second)
 }
 
-func TestDeleteUserAccount(t *testing.T) {
-	// create user account
+// TestUpdateUserAccountInfo tests the UpdateUserAccountInfo method which updates the details of the user based on the ID
+func TestUpdateUserAccountInfo(t *testing.T) {
 	userAccount1 := createRandomUser(t)
 
-	// delete user account
+	arg := UpdateUserAccountParams{
+		ID: userAccount1.ID,
+		Firstname: userAccount1.Firstname,
+		Lastname: userAccount1.Lastname,
+		Email: userAccount1.Email,
+		Mobile: userAccount1.Mobile,
+		Password: userAccount1.Password,
+	}
+
+	userAccount2, err := testQueries.UpdateUserAccount(context.Background(), arg)
+	require.NoError(t, err)
+	require.NotEmpty(t, userAccount2)
+
+	require.Equal(t, userAccount1.ID, userAccount2.ID)
+	require.Equal(t, userAccount1.Firstname, userAccount2.Firstname)
+	require.Equal(t, userAccount1.Lastname, userAccount2.Lastname)
+	require.Equal(t, userAccount1.Email, userAccount2.Email)
+	require.Equal(t, userAccount1.Mobile, userAccount2.Mobile)
+	require.Equal(t, userAccount1.Password, userAccount2.Password)
+
+	require.WithinDuration(t, userAccount1.CreatedAt, userAccount2.CreatedAt, time.Second)
+}
+
+// TestDeleteUserAccount tests the DeleteUserAccount method which deletes an existing record
+func TestDeleteUserAccount(t *testing.T) {
+	userAccount1 := createRandomUser(t)
+
 	err := testQueries.DeleteUserAccount(context.Background(), userAccount1.ID)
 	require.NoError(t, err)
 
