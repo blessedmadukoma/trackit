@@ -12,14 +12,14 @@ CREATE TABLE "users" (
 CREATE TABLE "accountBalance" (
   "id" bigserial PRIMARY KEY,
   "user_id" bigint NOT NULL,
-  "balance" numeric NOT NULL DEFAULT 0,
+  "balance" float NOT NULL DEFAULT 0,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz
 );
 
 CREATE TABLE "expenses" (
   "id" bigserial PRIMARY KEY,
-  "amount" numeric NOT NULL,
+  "amount" float NOT NULL,
   "description" varchar NOT NULL,
   "expenditure_date" timestamp NOT NULL,
   "category" varchar NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE "income" (
   "id" bigserial PRIMARY KEY,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz,
-  "amount" numeric NOT NULL,
+  "amount" float NOT NULL,
   "date" timestamptz NOT NULL,
   "user_id" bigint NOT NULL
 );
@@ -42,8 +42,8 @@ CREATE TABLE "budget" (
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz,
   "budget_name" varchar NOT NULL,
-  "initial_amount" numeric NOT NULL,
-  "current_amount" numeric NOT NULL,
+  "initial_amount" float NOT NULL,
+  "current_amount" float NOT NULL,
   "description" varchar NOT NULL,
   "start_date" timestamp NOT NULL,
   "end_date" timestamp NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE "transactions" (
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz,
   "category" varchar NOT NULL,
-  "amount" numeric NOT NULL,
+  "amount" float NOT NULL,
   "transaction_date" timestamptz NOT NULL,
   "user_id" bigint NOT NULL
 );
@@ -64,7 +64,7 @@ CREATE TABLE "savings" (
   "id" bigserial PRIMARY KEY,
   "created_at" timestamptz NOT NULL DEFAULT (now()),
   "updated_at" timestamptz,
-  "amount" numeric NOT NULL,
+  "amount" float NOT NULL,
   "user_id" bigint NOT NULL
 );
 
@@ -97,8 +97,6 @@ CREATE INDEX ON "transactions" ("amount");
 COMMENT ON COLUMN "budget"."initial_amount" IS 'initial amount must not be greater than account balance';
 
 ALTER TABLE "accountBalance" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "expenses" ADD FOREIGN KEY ("amount") REFERENCES "users" ("id");
 
 ALTER TABLE "expenses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
