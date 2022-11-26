@@ -57,6 +57,26 @@ func TestGetUserAccountByID(t *testing.T) {
 	require.WithinDuration(t, userAccount1.CreatedAt, userAccount2.CreatedAt, time.Second)
 }
 
+// TestListUsers tests the ListUsers method which lists all the users' accounts
+func TestListUsers(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		createRandomUser(t)
+	}
+
+	arg := ListUsersParams{
+		Limit: 5,
+		Offset: 5,
+	}
+
+	userAccounts, err := testQueries.ListUsers(context.Background(), arg)
+	require.NoError(t, err)
+	require.Len(t, userAccounts, 5)
+
+	for _, userAccount := range userAccounts {
+		require.NotEmpty(t, userAccount)
+	}
+}
+
 // TestUpdateUserAccountInfo tests the UpdateUserAccountInfo method which updates the details of the user based on the ID
 func TestUpdateUserAccountInfo(t *testing.T) {
 	userAccount1 := createRandomUser(t)
