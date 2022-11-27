@@ -5,3 +5,4 @@ Refactoring guide (What I did in no particular order):
 - redesigned the database schema using `dbdiagram.io`, exported to PostgreSQL and ran the migration file for it.
 - created `util` package for utilities such as generating random numbers, mobile numbers, strings, names, emails and passwords (with a test package for password method).
 - set up the tests for db connection, and `user.sql.go` which creates a new user account, gets a new user account by ID, list all existing user accounts, updates the existing information of the user's account and deletes the user account.
+- added github actions workflow to perform tests
