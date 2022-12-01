@@ -1,7 +1,7 @@
-DROP IF EXISTS accountBalance;
-DROP IF EXISTS expenses;
-DROP IF EXISTS income;
-DROP IF EXISTS budget;
-DROP IF EXISTS transactions;
-DROP IF EXISTS savings;
-DROP IF EXISTS users;
+DROP TABLE IF EXISTS expenses;
+DROP TABLE IF EXISTS income;
+DROP TABLE IF EXISTS budget;
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS savings;
+DROP TABlE IF EXISTS accounts;
+DROP TABLE IF EXISTS users;

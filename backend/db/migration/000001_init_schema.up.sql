@@ -9,7 +9,7 @@ CREATE TABLE "users" (
   "updated_at" timestamptz
 );
 
-CREATE TABLE "accountBalance" (
+CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
   "user_id" bigint NOT NULL,
   "balance" float NOT NULL DEFAULT 0,
@@ -96,7 +96,7 @@ CREATE INDEX ON "transactions" ("amount");
 
 COMMENT ON COLUMN "budget"."initial_amount" IS 'initial amount must not be greater than account balance';
 
-ALTER TABLE "accountBalance" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "accounts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "expenses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 

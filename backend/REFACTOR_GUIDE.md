@@ -6,3 +6,12 @@ Refactoring guide (What I did in no particular order):
 - created `util` package for utilities such as generating random numbers, mobile numbers, strings, names, emails and passwords (with a test package for password method).
 - set up the tests for db connection, and `user.sql.go` which creates a new user account, gets a new user account by ID, list all existing user accounts, updates the existing information of the user's account and deletes the user account.
 - added github actions workflow to perform tests
+- added api folder to handle api serving and routing
+- added gin for api management
+- wrote CRUD operations for users accounts
+- created a server file to handle creation of a new server, error responses and starting of the server
+- added config.go which uses viper to load configs and env variables
+- updated `main.go` to load the configs from config.go and start the server
+- accounts: wrote sql query to perform CRUD operations for accounts, added method to Get accounts by specific user ID. Wrote tests for the DB query package for accounts
+- budgets: wrote sql query to perform CRUD operations for budgets, added method to Get budget by specific user ID. Wrote tests for the DB query package for budgets.
+- Todo: write API for budget, write tests for accounts and budgets API
